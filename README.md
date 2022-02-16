@@ -6,7 +6,7 @@ Likely in this order
 - Discord.JS set up
 - Database (MS SQL?) set up
 - Express.js set up
-- Bolt Slack Framework set up
+- Bolt JS Slack Framework set up
 
 ## Tentative Database schema 
 
