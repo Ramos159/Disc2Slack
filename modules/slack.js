@@ -1,1 +1,1 @@
-// will hold Bolt Slack bot module part
+// will hold Bolt Slack
