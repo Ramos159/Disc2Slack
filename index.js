@@ -1,20 +1,10 @@
 /* eslint-disable no-unused-vars */
-const { fork } = require('child_process');
-const { setupSClient } = require('./modules/slack');
+const { setupSClient } = require('./slackbot');
+const { setupDClient } = require('./discordbot');
 
-function setupDiscordProcess(Process){
-  Process.on('message',(message)=>{
-    console.log(message);
-  });
-}
+const DClient  = setupDClient();
+const SClient = setupSClient(DClient);
 
-// since its blocking maybe doesnt accept Process.send()?
-// might have to use express after all.
-const DiscordProcess = fork('./modules/discord.js');
-setupDiscordProcess(DiscordProcess);
-console.log('process set up')
-DiscordProcess.send('Hello!');
-setupSClient(DiscordProcess);
 
 
 // try just jamming these together in one file

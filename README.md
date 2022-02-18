@@ -4,17 +4,19 @@ Discord and Slack integrated bot that can communicate with each other to relay a
 ## To-do
 Likely in this order
 - Discord.JS set up
+  - complete slack commands
 - Database (MS SQL?) set up
-- Express.js set up
+  - the whole thing
 - Bolt JS Slack Framework set up
+  - set up event listener and discord message handler
 
 ## Tentative Database schema 
 
 Users
 
-| ID | DiscordID | SlackWorkspaceID | IgnoreChannelIDs   |
-|----|-----------|------------------|--------------------|
-| int| string?   |  string?         | string?/null       |
+| ID | DiscordID | SlackWorkspaceID?| channelIDs|
+|----|-----------|------------------|-----------|
+| int| string?   |  string?         |string/null|
 
 <!-- we took out display channels for now -->
 ServerSettings
@@ -28,12 +30,9 @@ For anyone who doesn't want a DM notifs will go into the specified channel
 ## Tentative command tree
 
 - slack 
-  - add
-    - workspaceid
-    - ignorechannel
-  - remove
-    - workspaceid
-    - ignorechannel
+  - addchannel
+  - removechannel
+  - listchannels
 
 <!-- - discord 
   - enable (admin)
