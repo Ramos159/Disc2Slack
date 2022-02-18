@@ -28,7 +28,7 @@ ServerSettings
 For anyone who doesn't want a DM notifs will go into the specified channel
 
 ## Tentative command tree
-
+for discord bot:
 - slack 
   - addchannel
   - removechannel
