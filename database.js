@@ -4,7 +4,7 @@ async function setupDB(){
   const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: 'database.db',
-    logging: (...msg) => console.log(msg)
+    // logging: (...msg) => console.log(msg)
   });  
 
   try {
@@ -52,6 +52,9 @@ async function setupDB(){
     tableName:'UserChannels'
   });
   
+  UserChannel.belongsTo(User,{foreignKey:'UserId'});
+
+
   return [User,UserChannel];
 }
 

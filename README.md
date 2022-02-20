@@ -9,7 +9,10 @@ Likely in this order
   - Done for now✅
 - Bolt JS Slack Framework set up
   - set up event listener and discord message handler
+
+Bonus:
 - Refactor discord events and interactions into a discord events folder
+- Add channel events and groups events from slack
 
 ## Tentative Database schema 
 

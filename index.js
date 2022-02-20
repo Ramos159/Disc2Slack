@@ -1,12 +1,11 @@
 const { setupSClient } = require('./slackbot');
 const { setupDClient } = require('./discordbot');
 const { setupDB } =  require('./database');
-
+// const { setupWS } = require('./webserver');
 
 async function main(){
   const [User,UserChannel] = await setupDB();
-  console.log(User,UserChannel);
-  const DClient  = setupDClient(User,UserChannel);
+  const DClient  = await setupDClient(User,UserChannel);
   setupSClient(DClient,User,UserChannel);
 }
 

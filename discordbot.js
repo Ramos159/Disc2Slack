@@ -1,6 +1,6 @@
 const { Client, Intents, Collection } = require('discord.js');
 // eslint-disable-next-line no-unused-vars
-const { discordToken,discordClientID } = require('./config.js');
+const { discordToken,discordClientID, discordClientSecret } = require('./config.js');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
@@ -46,7 +46,6 @@ async function setupDClient(UM,UCM){
   const discordClient = await new Client({ intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILDS] });
   await setupCommands(discordClient);
 
-
   discordClient.once('ready', () => {
     console.log('Discord booted up successfully');
   });
@@ -63,14 +62,15 @@ async function setupDClient(UM,UCM){
     if (!command) return;
 
     // check if member is in database, if not create row for them
-  
     try {
-      await command.execute(interaction,UM,UCM);
+      await command.execute(discordClient,interaction,UM,UCM);
     } catch (error) {
       console.error(error);
       await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   });
+
+  return discordClient;
 }
 
 module.exports =  { setupDClient };

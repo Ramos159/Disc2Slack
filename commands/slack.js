@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
+const { createCommandEmbed } = require('../helpers/commandembed');
 
-async function addChannel(uId,cId,UM,UCM,interaction){
+async function addChannel(uId,cId,UM,UCM,interaction,DClient){
 	// eslint-disable-next-line no-unused-vars
 	const [user, created] = await UM.findOrCreate({
 		where: { DiscordId: uId }
@@ -15,19 +16,19 @@ async function addChannel(uId,cId,UM,UCM,interaction){
 	});
 
 	if(!chCreated){
-		interaction.reply(`You are already listening to Slack channel ${cId}.`);
+		interaction.reply({embeds:[createCommandEmbed(DClient,`You are already listening to Slack channel ${cId}.`)]});
 	}  else {
-		interaction.reply(`You are now listening to Slack channel ${cId}.`);
+		interaction.reply({embeds:[createCommandEmbed(DClient,`You are now listening to Slack channel ${cId}.`)]});
 	}
 }
 
-async function removeChannel(uId,cId,UM,UCM,interaction){
+async function removeChannel(uId,cId,UM,UCM,interaction,DClient){
 	const [user, created] = await UM.findOrCreate({
 		where: { DiscordId: uId }
 	});
 
 	if(created){
-		interaction.reply('You are not subscribed to any Slack Channels.');
+		interaction.reply({embeds:[createCommandEmbed(DClient,'You are not subscribed to any Slack Channels.')]});
 		return;
 	}
 
@@ -39,21 +40,21 @@ async function removeChannel(uId,cId,UM,UCM,interaction){
 	});
 
 	if(channel == null){
-		interaction.reply(`You are not subscribed to Slack channel ${cId}.`);
+		interaction.reply({embeds:[createCommandEmbed(DClient,`You are not subscribed to Slack channel ${cId}.`)]});
 	} else {
 		await channel.destroy();
-		interaction.reply(`You are no longer subscribed to Slack channel ${cId}.`);
+		interaction.reply({embeds:[createCommandEmbed(DClient,`You are no longer subscribed to Slack channel ${cId}.`)]});
 	}
 
 }
 
-async function listChannels(uId,UM,UCM,interaction){
+async function listChannels(uId,UM,UCM,interaction,DClient){
 	const [user, created] = await UM.findOrCreate({
 		where: { DiscordId: uId }
 	});
 
 	if(created){
-		interaction.reply('You are not subscribed to any Slack channels.');
+		interaction.reply({embeds:[createCommandEmbed(DClient,'You are not subscribed to any Slack channels.')]});
 		return;
 	}
 
@@ -65,23 +66,23 @@ async function listChannels(uId,UM,UCM,interaction){
 	});
 
 	if(channels.length == 0){
-		interaction.reply('You are not subscribed to any Slack channels.');
+		interaction.reply({embeds:[createCommandEmbed(DClient,'You are not subscribed to any Slack channels.')]});
 		return;
 	}
 
-	let str = 'Below are the Channel id\'s you are currently subscribed to:\n\n';
+	let str = 'Below are the Slack channel id\'s you are currently subscribed to:\n\n';
 
 	channels.forEach(channel => {
 		str += `${channel.dataValues.ChannelId}\n`;
 	});
 
-		interaction.reply(str);
+		interaction.reply({embeds:[createCommandEmbed(DClient,str)]});
 
 }
 
-async function resetChannels(typedId,uId,UM,UCM,interaction){
+async function resetChannels(typedId,uId,UM,UCM,interaction,DClient){
 	if(typedId != uId){
-		await interaction.reply('Personal Discord Id incorrectly inputed, please try again.');
+		await interaction.reply({embeds:[createCommandEmbed(DClient,'Personal Discord Id incorrectly inputed, please try again.')]});
 		return;
 	}
 
@@ -90,12 +91,12 @@ async function resetChannels(typedId,uId,UM,UCM,interaction){
 	});
 
 	if(created){
-		interaction.reply('You are not subscribed to any Slack channels at this time');
+		interaction.reply({embeds:[createCommandEmbed(DClient,'You are not subscribed to any Slack channels at this time')]});
 		return;
 	}
 
 	await UCM.destroy({where:{UserId:user.Id}});
-	interaction.reply('Your Slack subscriptions have been reset');
+	interaction.reply({embeds:[createCommandEmbed(DClient,'Your Slack subscriptions have been reset')]});
 }
 
 module.exports = { data: new SlashCommandBuilder()
@@ -127,23 +128,23 @@ module.exports = { data: new SlashCommandBuilder()
 			.setDescription('Erase all current Slack channel subscriptions')
 			.addStringOption(option => option.setName('typedid').setDescription('Enter your discord id')
 			.setRequired(true))),
-				async execute(interaction,UM,UCM){
+				async execute(Dclient,interaction,UM,UCM){
 					const userId = interaction.user.id;
 					const command = interaction.options._subcommand;
 					const channelId = interaction.options.getString('channelid');
 					const typedId = interaction.options.getString('typedid');
 					
 					if(command == 'addchannel'){
-						addChannel(userId,channelId,UM,UCM,interaction);
+						addChannel(userId,channelId,UM,UCM,interaction,Dclient);
 					} 
 					if(command == 'removechannel'){
-						removeChannel(userId, channelId,UM,UCM,interaction);
+						removeChannel(userId, channelId,UM,UCM,interaction,Dclient);
 					}
 					if(command == 'listchannels'){
-						listChannels(userId,UM,UCM,interaction);
+						listChannels(userId,UM,UCM,interaction,Dclient);
 					}
 					if(command == 'resetchannels'){
-						resetChannels(typedId,userId,UM,UCM,interaction);
+						resetChannels(typedId,userId,UM,UCM,interaction,Dclient);
 					}
 				}
 };
