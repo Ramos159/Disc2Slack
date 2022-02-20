@@ -27,7 +27,7 @@ async function removeChannel(uId,cId,UM,UCM,interaction){
 	});
 
 	if(created){
-		interaction.reply('You do not have any Slack channels registered to remove.');
+		interaction.reply('You are not subscribed to any Slack Channels.');
 		return;
 	}
 
@@ -39,10 +39,10 @@ async function removeChannel(uId,cId,UM,UCM,interaction){
 	});
 
 	if(channel == null){
-		interaction.reply(`You do not have Slack channel ${cId} registered for listening.`);
+		interaction.reply(`You are not subscribed to Slack channel ${cId}.`);
 	} else {
 		await channel.destroy();
-		interaction.reply(`You are no longer listening to Slack channel ${cId}.`);
+		interaction.reply(`You are no longer subscribed to Slack channel ${cId}.`);
 	}
 
 }
@@ -53,7 +53,7 @@ async function listChannels(uId,UM,UCM,interaction){
 	});
 
 	if(created){
-		interaction.reply('You do not have any Slack channels registered.');
+		interaction.reply('You are not subscribed to any Slack channels.');
 		return;
 	}
 
@@ -64,17 +64,18 @@ async function listChannels(uId,UM,UCM,interaction){
 		}
 	});
 
-	let str = '';
-
-	for(let channel in channels){
-		str += `${channel}\n`;
+	if(channels.length == 0){
+		interaction.reply('You are not subscribed to any Slack channels.');
+		return;
 	}
 
-	if(str == ''){
-		interaction.reply('You do not have any Slack channels registered.');
-	} else {
+	let str = 'Below are the Channel id\'s you are currently subscribed to:\n\n';
+
+	channels.forEach(channel => {
+		str += `${channel.dataValues.ChannelId}\n`;
+	});
+
 		interaction.reply(str);
-	}
 
 }
 
@@ -84,19 +85,23 @@ module.exports = { data: new SlashCommandBuilder()
 	.addSubcommand(subcommand =>
 		subcommand
 			.setName('addchannel')
-			.setDescription('add channel id to listen')
+			.setDescription('Add a channel to subscribe to')
 			.addStringOption(option =>
 				option.setName('channelid')
-					.setDescription('channel id to add')
+					.setDescription('Specify a Slack channel id to subscribe to')
 					.setRequired(true)))
 	.addSubcommand(subcommand =>
 		subcommand
 			.setName('removechannel')
-			.setDescription('remove channel id from listening')
+			.setDescription('Unsubscribe from a channel')
 			.addStringOption(option =>
 				option.setName('channelid')
-					.setDescription('channel id to remove')
-					.setRequired(true))),
+					.setDescription('Specifiy Slack channel id to unsubscribe')
+					.setRequired(true)))
+	.addSubcommand(subcommand =>
+		subcommand
+			.setName('listchannels')
+			.setDescription('List all the Slack channel id\'s')),
 					async execute(interaction,UM,UCM){
 						// needs work obvs
 						// eslint-disable-next-line no-unused-vars
