@@ -3,3 +3,4 @@ config.js
 .vscode
 database.db
 database.sqbpro
+.DS_store

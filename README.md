@@ -46,4 +46,7 @@ for discord bot:
   - remove (admind)
     - displaychannel -->
   
+## Example Screenshot
+![Disc2Slack example](./example.png)
+  
 
