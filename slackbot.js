@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-// will hold Bolt Slack
 const { App } = require('@slack/bolt');
 const { 
   // slackClientID,
@@ -10,7 +8,8 @@ const {
   slackAppToken
 } = require('./config');
 
-async function setupSClient(DProcess){
+// eslint-disable-next-line no-unused-vars
+async function setupSClient(DClient,UM,UCM){
   const app = await new App({
     appToken:slackAppToken,
     // clientSecret:slackClientSecret,
@@ -25,12 +24,13 @@ async function setupSClient(DProcess){
   //   // do something when someone joins a channel
   // });
 
+  // eslint-disable-next-line no-unused-vars
   app.message(async({message,say})=>{
     console.log(message);
   });
 
   await app.start();
-  console.log("Slack bot started");
+  console.log('Slack bot started');
 }
 
 module.exports= { setupSClient }; 

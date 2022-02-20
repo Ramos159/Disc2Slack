@@ -1,10 +1,16 @@
-/* eslint-disable no-unused-vars */
 const { setupSClient } = require('./slackbot');
 const { setupDClient } = require('./discordbot');
+const { setupDB } =  require('./database');
 
-const DClient  = setupDClient();
-const SClient = setupSClient(DClient);
 
+async function main(){
+  const [User,UserChannel] = await setupDB();
+  console.log(User,UserChannel);
+  const DClient  = setupDClient(User,UserChannel);
+  setupSClient(DClient,User,UserChannel);
+}
+
+main();
 
 
 // try just jamming these together in one file

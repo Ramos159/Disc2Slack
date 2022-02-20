@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
+async function setupDB(){
   const sequelize = new Sequelize({
     dialect: 'sqlite',
     storage: 'database.db',
@@ -7,47 +8,52 @@ const { Sequelize, DataTypes } = require('sequelize');
   });  
 
   try {
-    sequelize.authenticate();
+    await sequelize.authenticate();
     console.log('Connection has been established successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
 
   const User = sequelize.define('User',{
-    ID:{
+    Id:{
       type: DataTypes.INTEGER,
       allowNull:false,
       primaryKey:true,
       autoIncrement:true
     },
-    DiscordID:{
+    DiscordId:{
       type:DataTypes.STRING,
       allowNull:false,
     }
   },{
-    timestamps: false
+    timestamps: false,
+    tableName: 'Users'
   });
 
   const UserChannel = sequelize.define('UserChannel',{
-    ID:{
+    Id:{
       type: DataTypes.INTEGER,
       allowNull:false,
       primaryKey:true,
       autoIncrement:true
     },
-    UserID:{
+    UserId:{
       type:DataTypes.INTEGER,
-      references: User,
+      references: User.Id,
       primaryKey:true,
       allowNull:false
     },
-    ChannelID:{
+    ChannelId:{
       type: DataTypes.TEXT,
       allowNull:false
     }
   },{
-    timestamps: false
+    timestamps: false,
+    tableName:'UserChannels'
   });
+  
+  return [User,UserChannel];
+}
 
 
-module.exports = { sequelize,User,UserChannel }; 
+module.exports = { setupDB }; 

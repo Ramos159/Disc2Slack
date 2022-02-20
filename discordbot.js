@@ -14,13 +14,9 @@ async function setupCommands(DClient){
   const commandFiles = await fs.readdirSync('./commands/');
 
   for (const file of commandFiles) {
-    try{
       const command = require(`./commands/${file}`);
       commands.push(command.data.toJSON());
       DClient.commands.set(command.data.name,command);
-    } catch(err){
-      console.log(err);
-    }
   }
   
 	try {
@@ -45,17 +41,18 @@ async function setupCommands(DClient){
 
 }
 
-async function setupDClient(){
+// eslint-disable-next-line no-unused-vars
+async function setupDClient(UM,UCM){
   const discordClient = await new Client({ intents: [Intents.FLAGS.DIRECT_MESSAGES, Intents.FLAGS.GUILDS] });
   await setupCommands(discordClient);
 
 
   discordClient.once('ready', () => {
-    console.log('Discord booted up successfully...');
+    console.log('Discord booted up successfully');
   });
 
   discordClient.login(discordToken,).then(()=>{
-    console.log('Discord logged in successfully...');
+    console.log('Discord logged in successfully');
   });
 
   discordClient.on('interactionCreate', async interaction => {
@@ -68,17 +65,12 @@ async function setupDClient(){
     // check if member is in database, if not create row for them
   
     try {
-      await command.execute(interaction);
+      await command.execute(interaction,UM,UCM);
     } catch (error) {
       console.error(error);
       await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
     }
   });
 }
-// eslint-disable-next-line no-unused-vars
-async function sendDiscordMessage(DClient,SMessage){
-  // do stuff here
-  console.log('sending');
-}
 
-module.exports =  { setupDClient, sendDiscordMessage };
+module.exports =  { setupDClient };

@@ -1,20 +1,81 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-// eslint-disable-next-line no-unused-vars
-function addChannel(uID,cID){
-	//database add cID to uID list
-	console.log('use database to add to list of channels watched');
+async function addChannel(uId,cId,UM,UCM,interaction){
+	// eslint-disable-next-line no-unused-vars
+	const [user, created] = await UM.findOrCreate({
+		where: { DiscordId: uId }
+	});
+
+	// eslint-disable-next-line no-unused-vars
+	const [channel, chCreated] = await UCM.findOrCreate({
+		where: {
+			UserId: user.Id,
+			ChannelId: cId
+		}
+	});
+
+	if(!chCreated){
+		interaction.reply(`You are already listening to Slack channel ${cId}.`);
+	}  else {
+		interaction.reply(`You are now listening to Slack channel ${cId}.`);
+	}
 }
 
-// eslint-disable-next-line no-unused-vars
-function removeChannel(uID,cID){
-	//database add cID to uID list
-	console.log('use database to remove cid from channels watched');
+async function removeChannel(uId,cId,UM,UCM,interaction){
+	const [user, created] = await UM.findOrCreate({
+		where: { DiscordId: uId }
+	});
+
+	if(created){
+		interaction.reply('You do not have any Slack channels registered to remove.');
+		return;
+	}
+
+	const channel = await UCM.findOne({
+		where: {
+			UserId: user.Id,
+			ChannelId: cId
+		}
+	});
+
+	if(channel == null){
+		interaction.reply(`You do not have Slack channel ${cId} registered for listening.`);
+	} else {
+		await channel.destroy();
+		interaction.reply(`You are no longer listening to Slack channel ${cId}.`);
+	}
+
 }
 
-// eslint-disable-next-line no-unused-vars
-function listChannels(uID){
-	console.log('returns all channels the user is subscribed to');
+async function listChannels(uId,UM,UCM,interaction){
+	const [user, created] = await UM.findOrCreate({
+		where: { DiscordId: uId }
+	});
+
+	if(created){
+		interaction.reply('You do not have any Slack channels registered.');
+		return;
+	}
+
+	const channels = await UCM.findAll({
+		attribute: 'ChannelId',
+		where: {
+			UserId: user.Id
+		}
+	});
+
+	let str = '';
+
+	for(let channel in channels){
+		str += `${channel}\n`;
+	}
+
+	if(str == ''){
+		interaction.reply('You do not have any Slack channels registered.');
+	} else {
+		interaction.reply(str);
+	}
+
 }
 
 module.exports = { data: new SlashCommandBuilder()
@@ -36,22 +97,22 @@ module.exports = { data: new SlashCommandBuilder()
 				option.setName('channelid')
 					.setDescription('channel id to remove')
 					.setRequired(true))),
-					async execute(interaction){
+					async execute(interaction,UM,UCM){
 						// needs work obvs
 						// eslint-disable-next-line no-unused-vars
-						const userID = interaction.user.id;
+						const userId = interaction.user.id;
 						const command = interaction.options._subcommand;
-						const channelID = interaction.options.getString('channelid');
+						const channelId = interaction.options.getString('channelid');
 						// interaction.reply({content:`You used command ${command} with id: ${interaction.options.getString('channelid')}`,ephemeral:true});
 
 						if(command == 'addchannel'){
-							addChannel(userID,channelID);
+							addChannel(userId,channelId,UM,UCM,interaction);
 						} 
 						if(command == 'removechannel'){
-							removeChannel(userID, channelID);
+							removeChannel(userId, channelId,UM,UCM,interaction);
 						}
 						if(command == 'listchannels'){
-							listChannels(userID);
+							listChannels(userId,UM,UCM,interaction);
 						}
 					}
 };
