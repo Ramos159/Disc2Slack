@@ -14,16 +14,16 @@ Likely in this order
 
 Users
 
-| ID | DiscordID | SlackWorkspaceID?| channelIDs|
-|----|-----------|------------------|-----------|
-| int| string?   |  string?         |string/null|
+| ID | DiscordID |
+|----|-----------|
+| int| text      |   
 
 <!-- we took out display channels for now -->
-ServerSettings
 
-| ID | ServerID  | Prefix  |
-|----|-----------|---------|
-| int| string?   |  char   |
+UserChannels
+|     ID      | UserDiscordID | SlackChannelID |
+|-------------|---------------|----------------|
+|     int     |    text       |  text          | 
 
 For anyone who doesn't want a DM notifs will go into the specified channel
 
