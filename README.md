@@ -4,11 +4,12 @@ Discord and Slack integrated bot that can communicate with each other to relay a
 ## To-do
 Likely in this order
 - Discord.JS set up
-  - complete slack commands
-- Database (MS SQL?) set up
-  - the whole thing
+  - Embeds for commands
+- Database set up
+  - Done for now✅
 - Bolt JS Slack Framework set up
   - set up event listener and discord message handler
+- Refactor discord events and interactions into a discord events folder
 
 ## Tentative Database schema 
 

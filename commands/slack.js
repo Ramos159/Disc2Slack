@@ -79,6 +79,25 @@ async function listChannels(uId,UM,UCM,interaction){
 
 }
 
+async function resetChannels(typedId,uId,UM,UCM,interaction){
+	if(typedId != uId){
+		await interaction.reply('Personal Discord Id incorrectly inputed, please try again.');
+		return;
+	}
+
+	const [user, created] = await UM.findOrCreate({
+		where: { DiscordId: uId }
+	});
+
+	if(created){
+		interaction.reply('You are not subscribed to any Slack channels at this time');
+		return;
+	}
+
+	await UCM.destroy({where:{UserId:user.Id}});
+	interaction.reply('Your Slack subscriptions have been reset');
+}
+
 module.exports = { data: new SlashCommandBuilder()
 	.setName('slack')
 	.setDescription('Slack options')
@@ -101,23 +120,30 @@ module.exports = { data: new SlashCommandBuilder()
 	.addSubcommand(subcommand =>
 		subcommand
 			.setName('listchannels')
-			.setDescription('List all the Slack channel id\'s')),
-					async execute(interaction,UM,UCM){
-						// needs work obvs
-						// eslint-disable-next-line no-unused-vars
-						const userId = interaction.user.id;
-						const command = interaction.options._subcommand;
-						const channelId = interaction.options.getString('channelid');
-						// interaction.reply({content:`You used command ${command} with id: ${interaction.options.getString('channelid')}`,ephemeral:true});
-
-						if(command == 'addchannel'){
-							addChannel(userId,channelId,UM,UCM,interaction);
-						} 
-						if(command == 'removechannel'){
-							removeChannel(userId, channelId,UM,UCM,interaction);
-						}
-						if(command == 'listchannels'){
-							listChannels(userId,UM,UCM,interaction);
-						}
+			.setDescription('List all the Slack channel id\'s'))
+	.addSubcommand(subcommand =>
+		subcommand
+			.setName('resetchannels')
+			.setDescription('Erase all current Slack channel subscriptions')
+			.addStringOption(option => option.setName('typedid').setDescription('Enter your discord id')
+			.setRequired(true))),
+				async execute(interaction,UM,UCM){
+					const userId = interaction.user.id;
+					const command = interaction.options._subcommand;
+					const channelId = interaction.options.getString('channelid');
+					const typedId = interaction.options.getString('typedid');
+					
+					if(command == 'addchannel'){
+						addChannel(userId,channelId,UM,UCM,interaction);
+					} 
+					if(command == 'removechannel'){
+						removeChannel(userId, channelId,UM,UCM,interaction);
 					}
+					if(command == 'listchannels'){
+						listChannels(userId,UM,UCM,interaction);
+					}
+					if(command == 'resetchannels'){
+						resetChannels(typedId,userId,UM,UCM,interaction);
+					}
+				}
 };
