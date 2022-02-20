@@ -46,8 +46,7 @@ async function setupSClient(DClient,UM,UCM){
     const channel = await app.client.conversations.info({token:slackBotToken,channel:message.channel});
     const workspace = await app.client.team.info({token:slackBotToken,channel:message.channel});
     const chatLink = await app.client.chat.getPermalink({token:slackBotToken,channel:message.channel,message_ts:message.ts});
-    const embed = createSlackEmbed(DClient,text,user.user.name,user.user.profile.real_name_normalized,channel.channel.name,workspace.team.name,chatLink.permalink);
-    console.log(user);
+    const embed = createSlackEmbed(DClient,text,user.user.name,user.user.profile.display_name,channel.channel.name,workspace.team.name,chatLink.permalink);
 
     const discordIDs = await getDiscordIds(channel.channel.id,UM,UCM);
 

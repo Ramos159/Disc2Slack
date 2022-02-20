@@ -25,7 +25,7 @@ async function setupCommands(DClient){
     // DClient.guilds.cache.forEach((guildID)=>{
     //   console.log(guildID);
       rest.put(
-        Routes.applicationGuildCommands(discordClientID,'748365909449506847'),
+        Routes.applicationCommands(discordClientID),
         { body: commands },
       );
     // });

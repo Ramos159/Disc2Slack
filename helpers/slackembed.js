@@ -7,7 +7,7 @@ function createSlackEmbed(DClient,text,username,realname,channel,workspace,chatL
 	const randomColor = colors[Math.floor(Math.random() * colors.length)];
 	const embed = new MessageEmbed()
 		.setColor(randomColor)
-		.setAuthor({name:username == realname? 'Message from '+username : 'Message from '+username+'('+realname+')',iconURL: DClient.user.displayAvatarURL()})
+		.setAuthor({name:username == realname? 'Message from '+username : 'Message from '+realname+'('+username+')',iconURL: DClient.user.displayAvatarURL()})
     .setTitle(workspace + ' in channel #' + channel)
 		.setDescription(text+`\n\n[Link to message](${chatLink})`)
 		.setTimestamp()
