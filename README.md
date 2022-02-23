@@ -1,4 +1,4 @@
-# Disc2slack
+# Disc2Slack
 Discord and Slack integrated bot that can communicate with each other to relay and deliver messages across platforms
 
 ## To-do
