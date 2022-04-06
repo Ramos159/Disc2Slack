@@ -1,7 +1,7 @@
 # Disc2Slack
 Discord and Slack integrated bot that can communicate with each other to relay and deliver messages across platforms
 
-## To-do
+<!-- ## To-do
 Likely in this order
 - Discord.JS set up
   - Embeds for commands
@@ -12,9 +12,9 @@ Likely in this order
 
 Bonus:
 - Refactor discord events and interactions into a discord events folder
-- Add channel events and groups events from slack
+- Add channel events and groups events from slack -->
 
-## Tentative Database schema 
+<!-- ## Tentative Database schema 
 
 Users
 
@@ -24,19 +24,19 @@ Users
 
 <!-- we took out display channels for now -->
 
-UserChannels
+<!--UserChannels
 |     ID      | UserDiscordID | SlackChannelID |
 |-------------|---------------|----------------|
 |     int     |    text       |  text          | 
 
-For anyone who doesn't want a DM notifs will go into the specified channel
+For anyone who doesn't want a DM notifs will go into the specified channel -->
 
-## Tentative command tree
+<!-- ## Tentative command tree
 for discord bot:
 - slack 
   - addchannel
   - removechannel
-  - listchannels
+  - listchannels -->
 
 <!-- - discord 
   - enable (admin)
